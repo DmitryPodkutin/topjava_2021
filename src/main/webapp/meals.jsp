@@ -18,6 +18,10 @@
         .color-green {
             color: green;
         }
+
+        .tab {
+            margin-right: 50px;
+        }
     </style>
 </head>
 <body>
@@ -28,6 +32,8 @@
         <th>DateTime</th>
         <th>Description</th>
         <th>Calories</th>
+        <th>Delete</th>
+        <th>Edit</th>
     </tr>
     </thead>
     <tbody>
@@ -35,13 +41,24 @@
         <jsp:useBean id="meals" scope="request" type="java.util.List"/>
         <c:forEach var="meal" items="${meals}">
     <tr class="${meal.isExcess() == true ? 'color-red':'color-green'}">
-        <td>${f:formatLocalDateTime(meal.getDateTime(), 'dd-MM-yyy HH:mm:ss')}</td>
+        <td>${f:formatLocalDateTime(meal.getDateTime())}</td>
         <td>${meal.getDescription()}</td>
         <td>${meal.getCalories()}</td>
+        <td><a href="meals?action=delete&id=<c:out value="${meal.getId()}"/>">Delete</a></td>
+        <td><a href="meals?action=edit&id=<c:out value="${meal.getId()}"/>">Edit</a></td>
         </c:forEach>
     </tr>
     </tbody>
 </table>
+
+<form method="POST" action='meals' name="frmAddMeal">
+    <input type="hidden" name="id" value="${meal.getId()}">
+    DateTime : <input type="text" name="dateTime"
+                      value="<c:out value="${f:formatLocalDateTime(meal.getDateTime())}"/>"/> <br/>
+    Description : <input type="text" name="description" value="<c:out value="${meal.getDescription()}"/>"/><br/>
+    Calories : <input type="text" name="calories" value="<c:out value="${meal.getCalories()}"/>"/> <br/>
+    <input type="submit" value="AddMeal"/>
+</form>
 
 <h3><a href="index.html">Home</a></h3>
 <hr>
