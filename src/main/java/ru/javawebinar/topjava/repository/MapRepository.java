@@ -1,26 +1,31 @@
 package ru.javawebinar.topjava.repository;
 
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.util.TimeUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalTime;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class MapRepository implements Repository {
-    public Map<Integer, Meal> meals = new HashMap();
+    public Map<Integer, Meal> meals = new ConcurrentHashMap<>();
     private final AtomicInteger id = new AtomicInteger(0);
 
-    @Override
-    public void save(Meal meal) {
-        meal.setId(id.incrementAndGet());
-        meals.put(meal.getId(), meal);
+    {
+        MealsUtil.meals.forEach(this::save);
     }
 
     @Override
-    public void update(Meal meal) {
-    meals.put(meal.getId(),meal);
+    public Meal save(Meal meal) {
+        if (meal.getId() == null) {
+            meal.setId(id.incrementAndGet());
+        }
+        meals.put(meal.getId(), meal);
+        return meals.get(meal.getId());
     }
 
     @Override
@@ -35,6 +40,18 @@ public class MapRepository implements Repository {
 
     @Override
     public List<Meal> getAll() {
-        return new ArrayList<>(meals.values());
+        return getAllByFilter(meal -> true);
+    }
+
+    @Override
+    public List<Meal> getAllBetweenHalfOpen(LocalTime startTime, LocalTime endTime) {
+        return getAllByFilter(meal -> TimeUtil.isBetweenHalfOpen(meal.getTime(), startTime, endTime));
+    }
+
+    public List<Meal> getAllByFilter(Predicate<Meal> filter) {
+        return meals.values().stream()
+                .filter(filter)
+                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
+                .collect(Collectors.toList());
     }
 }

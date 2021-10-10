@@ -28,6 +28,14 @@ public class Meal {
         return dateTime;
     }
 
+    public LocalTime getTime() {
+        return dateTime.toLocalTime();
+    }
+
+    public LocalDate getDate() {
+        return dateTime.toLocalDate();
+    }
+
     public String getDescription() {
         return description;
     }
@@ -36,19 +44,21 @@ public class Meal {
         return calories;
     }
 
-    public LocalDate getDate() {
-        return dateTime.toLocalDate();
-    }
-
-    public LocalTime getTime() {
-        return dateTime.toLocalTime();
-    }
-
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Meal{" +
+                "id=" + id +
+                ", dateTime=" + dateTime +
+                ", description='" + description + '\'' +
+                ", calories=" + calories +
+                '}';
     }
 }

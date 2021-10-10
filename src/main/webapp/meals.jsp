@@ -26,7 +26,7 @@
 </head>
 <body>
 <h2>MealsList</h2>
-<table>
+<h3><a href="meals?action=save">Add Meal</a></h3><table>
     <thead>
     <tr>
         <th>DateTime</th>
@@ -50,16 +50,6 @@
     </tr>
     </tbody>
 </table>
-
-<form method="POST" action='meals' name="frmAddMeal">
-    <input type="hidden" name="id" value="${meal.getId()}">
-    DateTime : <input type="text" name="dateTime"
-                      value="<c:out value="${f:formatLocalDateTime(meal.getDateTime())}"/>"/> <br/>
-    Description : <input type="text" name="description" value="<c:out value="${meal.getDescription()}"/>"/><br/>
-    Calories : <input type="text" name="calories" value="<c:out value="${meal.getCalories()}"/>"/> <br/>
-    <input type="submit" value="AddMeal"/>
-</form>
-
 <h3><a href="index.html">Home</a></h3>
 <hr>
 </body>
