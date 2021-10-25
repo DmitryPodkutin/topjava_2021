@@ -20,12 +20,8 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("forward to users");
-        String select = request.getParameter("select");
-        if (select.equals("admin")) {
-            SecurityUtil.setId(1);
-        } else {
-            SecurityUtil.setId(2);
-        }
-        response.sendRedirect("index.html");
+        int id = Integer.parseInt(request.getParameter("select"));
+        SecurityUtil.setId(id);
+        response.sendRedirect("meals");
     }
 }
