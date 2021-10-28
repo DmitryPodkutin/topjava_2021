@@ -9,10 +9,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.MealsTestData;
-import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.Role;
-import ru.javawebinar.topjava.model.User;
+
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
@@ -22,8 +20,6 @@ import java.util.List;
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealsTestData.*;
 import static ru.javawebinar.topjava.UserTestData.*;
-import static ru.javawebinar.topjava.UserTestData.assertMatch;
-
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
@@ -38,8 +34,8 @@ public class MealServiceTest {
 
     @Test
     public void get() {
-        Meal meal = service.get(MEAL.getId(), USER_ID);
-        MealsTestData.assertMatch(meal, MEAL);
+        Meal meal = service.get(MEAL_1.getId(), USER_ID);
+        MealsTestData.assertMatch(meal, MEAL_1);
     }
 
     @Test

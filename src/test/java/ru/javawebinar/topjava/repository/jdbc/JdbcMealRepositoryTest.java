@@ -60,7 +60,7 @@ public class JdbcMealRepositoryTest {
 
     @Test
     public void get() {
-        Meal expected = MealsTestData.MEAL;
+        Meal expected = MealsTestData.MEAL_1;
         MealsTestData.assertMatch(repository.get(expected.getId(), UserTestData.USER_ID),expected);
     }
 
@@ -83,6 +83,6 @@ public class JdbcMealRepositoryTest {
     @Test
     public void getBetweenHalfOpen() {
         List<Meal> meals = repository.getBetweenHalfOpen(LocalDateTime.of(2011, 1, 31,10,0), LocalDateTime.of(2011, 1, 31,20,0), 100000);
-        MealsTestData.assertMatch(meals, MealsTestData.MEALS.get(0), MealsTestData.MEALS.get(1), MealsTestData.MEALS.get(2));
+        MealsTestData.assertMatch(meals, MealsTestData.MEALS.get(1), MealsTestData.MEALS.get(2));
     }
 }
