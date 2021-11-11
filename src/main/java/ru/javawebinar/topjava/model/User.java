@@ -1,17 +1,15 @@
 package ru.javawebinar.topjava.model;
 
+import org.hibernate.validator.constraints.Range;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.CollectionUtils;
+
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.hibernate.validator.constraints.Range;
-import org.springframework.util.CollectionUtils;
-
-import javax.persistence.*;
-import java.util.Collection;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.Set;
+import java.util.*;
 
 import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 
@@ -57,6 +55,10 @@ public class User extends AbstractNamedEntity {
     @Range(min = 10, max = 10000)
     private int caloriesPerDay = DEFAULT_CALORIES_PER_DAY;
 
+    @OneToMany(mappedBy="user",fetch = FetchType.EAGER)
+    @Value("#{T(java.util.Collections).emptyList()}")
+    List<Meal> meals;
+
     public User() {
     }
 
@@ -78,6 +80,7 @@ public class User extends AbstractNamedEntity {
         setRoles(roles);
     }
 
+
     public String getEmail() {
         return email;
     }
@@ -92,6 +95,10 @@ public class User extends AbstractNamedEntity {
 
     public Date getRegistered() {
         return registered;
+    }
+
+    public List<Meal> getMeals() {
+        return meals;
     }
 
     public void setRegistered(Date registered) {
@@ -126,15 +133,20 @@ public class User extends AbstractNamedEntity {
         this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
     }
 
+    public void setMeals(List<Meal> meals) {
+        this.meals = meals;
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
-                ", email=" + email +
-                ", name=" + name +
+                "email='" + email + '\'' +
+                ", password='" + password + '\'' +
                 ", enabled=" + enabled +
+                ", registered=" + registered +
                 ", roles=" + roles +
                 ", caloriesPerDay=" + caloriesPerDay +
+                ", \n meals=" + meals +
                 '}';
     }
 }
