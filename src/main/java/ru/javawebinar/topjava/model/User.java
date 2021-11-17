@@ -1,5 +1,8 @@
 package ru.javawebinar.topjava.model;
 
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
@@ -21,7 +24,6 @@ import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 @Entity
 @Table(name = "users")
 public class User extends AbstractNamedEntity {
-
     public static final String DELETE = "User.delete";
     public static final String BY_EMAIL = "User.getByEmail";
     public static final String ALL_SORTED = "User.getAllSorted";
@@ -48,6 +50,8 @@ public class User extends AbstractNamedEntity {
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
             uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role"}, name = "uk_user_roles")})
     @Column(name = "role")
+//    @Fetch(FetchMode.SUBSELECT)
+    @BatchSize(size = 200)
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
@@ -55,7 +59,7 @@ public class User extends AbstractNamedEntity {
     @Range(min = 10, max = 10000)
     private int caloriesPerDay = DEFAULT_CALORIES_PER_DAY;
 
-    @OneToMany(mappedBy="user",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="user",fetch = FetchType.LAZY)
     @Value("#{T(java.util.Collections).emptyList()}")
     List<Meal> meals;
 

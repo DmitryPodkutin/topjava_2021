@@ -16,11 +16,11 @@ import static ru.javawebinar.topjava.UserTestData.user;
 @ActiveProfiles(Profiles.DATAJPA)
 public class DataJpaMealServiceTest extends AbstractMealServiceTest {
     @Autowired
-    private DataJpaMealRepository repo;
+    private DataJpaMealRepository repository;
 
     @Test
     public void getMealWithUser() {
-        Meal actualMeal = repo.getMealWithUser(100002, 100000);
+        Meal actualMeal = repository.getWithUser(100002, 100000);
         User actualUser = actualMeal.getUser();
         actualUser.setMeals(null);
         MEAL_MATCHER.assertMatch(actualMeal, meal1);
