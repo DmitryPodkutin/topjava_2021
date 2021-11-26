@@ -5,13 +5,18 @@ import org.junit.Rule;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
+import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.TimingRules;
+
+import java.util.Arrays;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
@@ -32,13 +37,20 @@ public abstract class AbstractServiceTest {
     public Stopwatch stopwatch = TimingRules.STOPWATCH;
 
     //  Check root cause in JUnit: https://github.com/junit-team/junit4/pull/778
-    protected <T extends Throwable> void validateRootCause(Class<T> rootExceptionClass, Runnable runnable) {
-        assertThrows(rootExceptionClass, () -> {
+    protected <T extends Throwable> void validateRootCause(Runnable runnable) {
+        assertThrows((Class<T>) javax.validation.ConstraintViolationException.class, () -> {
             try {
                 runnable.run();
             } catch (Exception e) {
                 throw getRootCause(e);
             }
         });
+    }
+
+    @Autowired
+    Environment env;
+
+    public boolean isNotJdbcProfile() {
+        return Arrays.stream(env.getActiveProfiles()).noneMatch(p -> p.equals(Profiles.JDBC));
     }
 }
