@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -63,17 +64,22 @@ public class JdbcUserRepository implements UserRepository {
     }
 
 
+    //    @Override
+//    public User get(int id) {
+//        List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE id=?", ROW_MAPPER, id);
+//        return users.isEmpty() ? null : setRoles(users.stream().findFirst().orElse(null));
+//    }
     @Override
     public User get(int id) {
-        List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE id=?", ROW_MAPPER, id);
-        return users.isEmpty() ? null : setRoles(users.stream().findFirst().orElse(null));
+        List<User> users = jdbcTemplate.query("SELECT * FROM users LEFT JOIN user_roles ur on users.id = ur.user_id WHERE id=?", new MyRowMapper(), id);
+        return DataAccessUtils.singleResult(users);
     }
 
     @Override
     public User getByEmail(String email) {
 //        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
-        List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
-        return users.isEmpty() ? null : setRoles(users.stream().findFirst().orElse(null));
+        List<User> users = jdbcTemplate.query("SELECT * FROM users LEFT JOIN user_roles ur on users.id = ur.user_id WHERE email=?", new MyRowMapper(), email);
+        return DataAccessUtils.singleResult(users);
     }
 
     @Override
@@ -99,14 +105,6 @@ public class JdbcUserRepository implements UserRepository {
                 ps.setString(2, role.name());
             });
         }
-    }
-
-    private User setRoles(User user) {
-        if (user != null) {
-            List<Role> roles = (jdbcTemplate.queryForList("SELECT role FROM user_roles  WHERE user_id=?", Role.class, user.id()));
-            user.setRoles(roles);
-        }
-        return user;
     }
 
     private void deleteRoles(User u) {
