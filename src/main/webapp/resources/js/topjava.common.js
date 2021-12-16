@@ -20,7 +20,6 @@ function add() {
 function updateRow(id) {
     form.find(":input").val("");
     $.get(ctx.ajaxUrl + id, function (data) {
-        console.log(data)
         $.each(data, function (key, value) {
             form.find("input[name='" + key + "']").val(value);
         });
@@ -73,6 +72,18 @@ function successNoty(text) {
         layout: "bottomRight",
         timeout: 1000
     }).show();
+}
+
+function renderEditBtn(data, type, row) {
+    if (type === "display") {
+        return "<a onclick='updateRow(" + row.id + ");'><span class='fa fa-pencil'></span></a>";
+    }
+}
+
+function renderDeleteBtn(data, type, row) {
+    if (type === "display") {
+        return "<a onclick='deleteRow(" + row.id + ");'><span class='fa fa-remove'></span></a>";
+    }
 }
 
 function failNoty(jqXHR) {
